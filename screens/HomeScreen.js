@@ -22,8 +22,8 @@ export default class HomeScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.top}></View>
         <View style={styles.bot}>
-          <View style={styles.botLeft}><Text style={styles.botLeft}>Clear</Text></View>
-          <View style={styles.botRight}><Text style={styles.botRight}>Enter</Text></View>
+          <View style={styles.botLeft}><Text style={styles.botLeftText}>Clear</Text></View>
+          <View style={styles.botRight}><Text style={styles.botRightText}>Enter</Text></View>
         </View>
       </View>
     );
@@ -49,13 +49,17 @@ styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 50,
   },
   botRight: {
     backgroundColor: 'green',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  botRightText: {
+    fontSize: 50,
+  },
+  botLeftText: {
     fontSize: 50,
   },
 });
