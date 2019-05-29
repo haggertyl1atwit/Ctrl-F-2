@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -16,11 +17,23 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  state = {
+    inputValue: 'Enter search target here'
+};
 
+_handleTextChange = inputValue => {
+    this.setState({ inputValue });
+};
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.top}></View>
+        <View style={styles.top}>
+          <TextInput
+            value={this.state.inputValue}
+            onChangeText={this._handleTextChange}
+            style={styles.input}
+            />
+        </View>
         <View style={styles.bot}>
           <View style={styles.botLeft}><Text style={styles.botLeftText}>Clear</Text></View>
           <View style={styles.botRight}><Text style={styles.botRightText}>Enter</Text></View>
@@ -35,9 +48,11 @@ styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   top: {
-    backgroundColor: 'black',
+    backgroundColor: '#2E2E2E',
     flex: 2,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bot: {
     backgroundColor: 'blue',
@@ -61,5 +76,12 @@ styles = StyleSheet.create({
   },
   botLeftText: {
     fontSize: 50,
+  },
+  input: {
+    fontSize: 30,
+    color: 'white',
+    width: 390,
+    height: 200,
+    padding: 24, 
   },
 });
