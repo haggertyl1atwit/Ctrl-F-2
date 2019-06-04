@@ -9,67 +9,13 @@ import {
   ImageBackground,
   Modal,
 } from 'react-native';
-import { Constants, Permissions } from 'expo';
+import { Constants, Camera, Permissions } from 'expo';
 import {Ionicons} from '@expo/vector-icons';
-import { RNCamera as Camera } from "react-native-camera";
-import RNTextDetector from "react-native-text-detector";
-export default class App extends React.Component {
-  
-  /**
-   * processImage
-   *
-   * Responsible for getting image from react native camera and
-   * starting image processing.
-   *
-   * @param {string} uri              Path for the image to be processed
-   * @param {object} imageProperties  Other properties of image to be processed
-   * @memberof App
-   */
-  processImage = async (uri, imageProperties) => {
-    const visionResp = await RNTextDetector.detectFromUri(uri);
-    if (!(visionResp && visionResp.length > 0)) {
-      throw "UNMATCHED";
-    }
-    this.setState({
-      visionResp: this.mapVisionRespToScreen(visionResp, imageProperties)
-    });
-  };
-    /**
-   * mapVisionRespToScreen
-   *
-   * Converts RNTextDetectors response in representable form for
-   * device's screen in accordance with the dimensions of image
-   * used to processing.
-   *
-   * @param {array}  visionResp       Response from RNTextDetector
-   * @param {object} imageProperties  Other properties of image to be processed
-   * @memberof App
-   */
-  mapVisionRespToScreen = (visionResp, imageProperties) => {
-    const IMAGE_TO_SCREEN_Y = screenHeight / imageProperties.height;
-    const IMAGE_TO_SCREEN_X = screenWidth / imageProperties.width;
-
-    return visionResp.map(item => {
-      return {
-        item,
-        position: {
-          width: item.bounding.width * IMAGE_TO_SCREEN_X,
-          left: item.bounding.left * IMAGE_TO_SCREEN_X,
-          height: item.bounding.height * IMAGE_TO_SCREEN_Y,
-          top: item.bounding.top * IMAGE_TO_SCREEN_Y
-        }
-      };
-    });
-  };
-  
+export default class LinksScreen extends React.Component {
   state = {
     hasCameraPermission: false,
     previewPhotoModalIsOpen: false,
     currentPhoto: null,
-    loading: false,
-    image: null,
-    error: null,
-    visionResp: []
   };
 
   async componentDidMount() {
@@ -135,11 +81,34 @@ export default class App extends React.Component {
       </View>
     ) : null;
   };
+  processImage = async (uri, imageProperties) => {
+    const visionResp = await RNTextDetector.detectFromUri(uri);
+    if (!(visionResp && visionResp.length > 0)) {
+      throw "UNMATCHED";
+    }
+    this.setState({
+      visionResp: this.mapVisionRespToScreen(visionResp, imageProperties)
+    });
+  };
+  
+  mapVisionRespToScreen = (visionResp, imageProperties) => {
+    const IMAGE_TO_SCREEN_Y = screenHeight / imageProperties.height;
+    const IMAGE_TO_SCREEN_X = screenWidth / imageProperties.width;
+
+    return visionResp.map(item => {
+      return {
+        ...item,
+        position: {
+          width: item.bounding.width * IMAGE_TO_SCREEN_X,
+          left: item.bounding.left * IMAGE_TO_SCREEN_X,
+          height: item.bounding.height * IMAGE_TO_SCREEN_Y,
+          top: item.bounding.top * IMAGE_TO_SCREEN_Y
+        }
+      };
+    });
+  };
 
   render() {
-    // check to see permission to use the camera has been granted.
-    // If not, render an annoying message
-    // If permission has been given, render the camera and the hidden preview-photo Modal (A Modal is a pop up window)
     return this.state.hasCameraPermission ? (
       <Fragment>
         <View style={{ flex: 1, height: 500, width: '100%' }}>
@@ -156,32 +125,39 @@ export default class App extends React.Component {
             type={'back'}>
             {this.renderBottomBar()}
           </Camera>
-          {this.state.visionResp.map(item => {
+        </View>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.previewPhotoModalIsOpen}>
+          {this.renderPreview(this.state.currentPhoto ? (
+            <ImageBackground
+            source={{ uri: this.state.currentPhoto }}
+            key="image"
+            resizeMode="cover"
+          >
+            {this.state.visionResp.map(item => {
               return (
                 <TouchableOpacity
                   style={[style.boundingRect, item.position]}
                   key={item.text}
                 />
               );
+            })
             })}
-        ) : null}
-      </View>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.previewPhotoModalIsOpen}>
-          {this.renderPreview(this.state.currentPhoto)}
+          </ImageBackground>
+          ) : null)}
         </Modal>
+        
       </Fragment>
     ) : (
-      <Text>Please grant permission to use your phone's camera</Text>
+      <Text>{"Please grant permission to use your phone's camera"}</Text>
     );
   }
 }
 
 const styles = StyleSheet.create({
   bottomBar: {
-    margin: 5,
     backgroundColor: 'transparent',
     alignSelf: 'flex-end',
     justifyContent: 'space-around',
@@ -192,4 +168,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
+  boundingRect: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FF6600"
+  }
 });
