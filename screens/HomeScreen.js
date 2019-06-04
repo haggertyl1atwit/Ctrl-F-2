@@ -28,12 +28,17 @@ _handleTextChange = inputValue => {
     return (
       <View style={styles.container}>
         <View style={styles.top}>
-          <TextInput
-            value={this.state.inputValue}
-            onChangeText={this._handleTextChange}
-            style={styles.input}
-            />
+          <View>
+            <Text style={styles.title}>Welcome to Control-F</Text>
+          </View>
         </View>
+      <View style={styles.mid}>
+        <TextInput
+              value={this.state.inputValue}
+              onChangeText={this._handleTextChange}
+              style={styles.input}
+              />
+      </View>
         <View style={styles.bot}>
           <View style={styles.botLeft}><Text style={styles.botLeftText}>Clear</Text></View>
           <View style={styles.botRight}><Text style={styles.botRightText}>Enter</Text></View>
@@ -49,27 +54,36 @@ styles = StyleSheet.create({
   },
   top: {
     backgroundColor: '#2E2E2E',
-    flex: 2,
-    flexDirection: 'row',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bot: {
-    backgroundColor: 'blue',
+    backgroundColor: '#2E2E2E',
     flex: 1,
     flexDirection: 'row',
   },
-  botLeft: {
-    backgroundColor: 'red',
+  mid: {
     flex: 1,
+    backgroundColor: '#2E2E2E',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  botRight: {
-    backgroundColor: 'green',
+  botLeft: {
+    backgroundColor: '#ef6969',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderRadius: 30,
+  },
+  botRight: {
+    backgroundColor: '#8cffa7',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderRadius: 30,
   },
   botRightText: {
     fontSize: 50,
@@ -80,8 +94,12 @@ styles = StyleSheet.create({
   input: {
     fontSize: 30,
     color: 'white',
-    width: 390,
-    height: 200,
-    padding: 24, 
+    flex: 1,
+  },
+  title: {
+    fontSize: 40,
+    color: 'white',
+    flex: 1,
+     marginTop: 15,
   },
 });
