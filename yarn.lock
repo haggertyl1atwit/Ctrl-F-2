@@ -5829,10 +5829,10 @@ react-native-branch@2.2.5:
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.2.5.tgz#4074dd63b4973e6397d9ce50e97b57c77a518e9d"
   integrity sha1-QHTdY7SXPmOX2c5Q6XtXx3pRjp0=
 
-react-native-camera@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-2.9.0.tgz#5ef94a535dbbfd215d672deef8d0c45bf06b1f3a"
-  integrity sha512-S1vtsmCx2upnLK/4xYALHKB1itbujHemAIhQ+R0qxxEjb/8TYP7AJUjlxmBJ57tjYR3IaNCAeiashCCnEvGe5Q==
+react-native-camera@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-2.10.0.tgz#0b2f2f0e625ac2b936088e70884fff0d679da264"
+  integrity sha512-2ZgPxx9UiK8x/s6ee9oyjbnIK6K9URJdY5pJQp/KZ2WOp2mr0B+7l29Gv+m4qtAo7h9j4xUIiF2nxuxLFRcNJw==
   dependencies:
     prop-types "^15.6.2"
 

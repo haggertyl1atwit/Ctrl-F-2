@@ -11,11 +11,14 @@ import {
 } from 'react-native';
 import { Constants, Camera, Permissions } from 'expo';
 import {Ionicons} from '@expo/vector-icons';
+import RNTextDetector from "react-native-text-detector";
 export default class LinksScreen extends React.Component {
   state = {
     hasCameraPermission: false,
     previewPhotoModalIsOpen: false,
     currentPhoto: null,
+    image: null,
+    visionResp: []
   };
 
   async componentDidMount() {
@@ -37,6 +40,17 @@ export default class LinksScreen extends React.Component {
       // Take the photo and then pass the photo to our function onPicureSaved
       this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
     }
+    this.setState(
+      {
+        image: currentPhoto.uri
+      },
+      () => {
+        console.log(currentPhoto.uri);
+        this.processImage(currentPhoto.uri, {
+          height: currentPhoto.uri,
+          width: currentPhoto.uri
+        });
+      })
   };
 
   renderBottomBar = () => (
@@ -50,37 +64,6 @@ export default class LinksScreen extends React.Component {
       </View>
     </View>
   );
-
-  renderPreview = photo => {
-    // Get the photo's URI (path to where the photo is stored)
-    const image = photo && photo.uri;
-    // If we have an image then render the photo as a background image, if not, render nothing (null)
-    return image ? (
-      <View style={{ flex: 1 }}>
-        <ImageBackground
-          source={{ uri: image }}
-          style={{ width: '100%', height: '100%' }}>
-          <View
-            style={{
-              flex: 1,
-              width: '100%',
-              flexDirection: 'row',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              justifyContent: 'space-around',
-            }}>
-            <Button
-              onPress={() => {
-                this.setState({ previewPhotoModalIsOpen: false });
-              }}
-              title={'close'}
-            />
-          </View>
-        </ImageBackground>
-      </View>
-    ) : null;
-  };
   processImage = async (uri, imageProperties) => {
     const visionResp = await RNTextDetector.detectFromUri(uri);
     if (!(visionResp && visionResp.length > 0)) {
@@ -108,6 +91,47 @@ export default class LinksScreen extends React.Component {
     });
   };
 
+  renderPreview = photo => {
+    // Get the photo's URI (path to where the photo is stored)
+    const image = photo && photo.uri;
+    // If we have an image then render the photo as a background image, if not, render nothing (null)
+    return image ? (
+      <View style={{ flex: 1 }}>
+        <ImageBackground
+          source={{ uri: image }}
+          style={{ width: '100%', height: '100%' }}
+          key="image"
+          resizeMode="cover">
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+              flexDirection: 'row',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              justifyContent: 'space-around',
+            }}>
+            {this.state.visionResp.map(item => {
+              return (
+                <TouchableOpacity
+                  style={[style.boundingRect, item.position]}
+                  key={item.text}
+                />
+              );
+            })}
+            <Button
+              onPress={() => {
+                this.setState({ previewPhotoModalIsOpen: false });
+              }}
+              title={'close'}
+            />
+          </View>
+        </ImageBackground>
+      </View>
+    ) : null;
+  };
+  
   render() {
     return this.state.hasCameraPermission ? (
       <Fragment>
@@ -130,23 +154,7 @@ export default class LinksScreen extends React.Component {
           animationType="slide"
           transparent={false}
           visible={this.state.previewPhotoModalIsOpen}>
-          {this.renderPreview(this.state.currentPhoto ? (
-            <ImageBackground
-            source={{ uri: this.state.currentPhoto }}
-            key="image"
-            resizeMode="cover"
-          >
-            {this.state.visionResp.map(item => {
-              return (
-                <TouchableOpacity
-                  style={[style.boundingRect, item.position]}
-                  key={item.text}
-                />
-              );
-            })
-            })}
-          </ImageBackground>
-          ) : null)}
+          {this.renderPreview(this.state.currentPhoto)}
         </Modal>
         
       </Fragment>
